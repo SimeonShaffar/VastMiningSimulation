@@ -11,7 +11,7 @@ struct Args {
     uint32_t m = 10;        // Number of unload stations
 };
 
-inline Args parseArgs(int argc, char* argv[]) {
+static Args parseArgs(int argc, char* argv[]) {
     Args args = {};         // Initialize with default values
     if (argc >= 3) {
         args.n = static_cast<uint32_t>(std::atoi(argv[1]));

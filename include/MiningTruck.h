@@ -7,7 +7,7 @@
 class MiningTruck {
     public:
         MiningTruck(uint32_t id);
-        
+
         uint32_t id() const { return id_; }
 
         bool isReadyToUnload() const { return task_ == Task::AT_UNLOAD_STATION; }
@@ -23,6 +23,9 @@ class MiningTruck {
     private:
         const uint32_t id_;
 
+        // Using an enum class and not a regular enum because it forces you 
+        // to be more explicit with referencing the enum values due to less 
+        // automatic integer conversions.
         enum class Task {
             AT_MINING_SITE,
             HEADING_TO_UNLOAD,
