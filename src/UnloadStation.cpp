@@ -35,3 +35,11 @@ uint32_t UnloadStation::totalUnloadsFromAllTrucks() const {
     }
     return totalUnloads;
 }
+
+uint32_t UnloadStation::totalLineWaitTimeFromAllTrucks() const {
+    uint32_t totalLineWaitTime = 0;
+    for (const auto& truck : trucksLine_) {
+        totalLineWaitTime += truck->totalLineWaitTime();
+    }
+    return totalLineWaitTime;
+}

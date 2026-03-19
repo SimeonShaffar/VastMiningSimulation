@@ -15,6 +15,7 @@ class MiningTruck {
         void startNextTask(uint32_t currentTime);
 
         uint32_t totalUnloads() const { return totalUnloads_; }
+        uint32_t totalLineWaitTime() const { return totalLineWaitTime_; }
 
     private:
         const uint32_t id_;
@@ -30,5 +31,7 @@ class MiningTruck {
 
         static uint32_t getMiningDuration();
 
-        uint32_t totalUnloads_;
+        uint32_t totalUnloads_;         // Total number of successful unloads
+        uint32_t totalLineWaitTime_;    // Total time the truck spent in the line
+        uint32_t lineEntranceTime_;     // Time the truck most recently entered the line
 };

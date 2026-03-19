@@ -19,6 +19,7 @@ class UnloadStation {
         uint32_t totalDumps() const { return totalDumps_; }
 
         uint32_t totalUnloadsFromAllTrucks() const;
+        uint32_t totalLineWaitTimeFromAllTrucks() const;
 
     private:
         const uint32_t id_;

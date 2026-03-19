@@ -1,12 +1,15 @@
 #include "MiningTruck.h"
 
 
-MiningTruck::MiningTruck(uint32_t id) : id_(id), task_(Task::AT_MINING_SITE), totalUnloads_(0) {
+MiningTruck::MiningTruck(uint32_t id) : 
+    id_(id), task_(Task::AT_MINING_SITE), 
+    totalUnloads_(0), totalLineWaitTime_(0) {
     endTime_ = getMiningDuration();
 }
 
 bool MiningTruck::taskFinished(uint32_t currentTime) const {
-    return currentTime >= endTime_;
+    bool result = currentTime >= endTime_;
+    return result;
 }
 
 void MiningTruck::startNextTask(uint32_t currentTime) {
@@ -18,11 +21,13 @@ void MiningTruck::startNextTask(uint32_t currentTime) {
         case Task::HEADING_TO_UNLOAD:
             task_ = Task::AT_UNLOAD_STATION;
             endTime_ = currentTime + 1;  // 5 minute unload time
+            lineEntranceTime_ = currentTime;
             return;
         case Task::AT_UNLOAD_STATION:
             totalUnloads_++;              // Successful unload, track for simulation report
             task_ = Task::HEADING_TO_SITE;
             endTime_ = currentTime + 6; // 6, 5 minute time steps for 30 minute travel time
+            totalLineWaitTime_ += currentTime - lineEntranceTime_;
             return;
         case Task::HEADING_TO_SITE:
             task_ = Task::AT_MINING_SITE;

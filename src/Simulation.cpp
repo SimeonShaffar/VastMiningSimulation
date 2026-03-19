@@ -13,6 +13,9 @@ Simulation::Simulation(uint32_t n, uint32_t m) : n_(n), m_(m) {
 
     currentTime_ = 0;
     endTime_ = 72 * 12; // 72 hours * 12, 5 minute time steps per hour
+
+    // Seed the random number generator to get non-deterministic results
+    srand(time(nullptr));
 }
 
 void Simulation::run() {
@@ -24,17 +27,8 @@ void Simulation::run() {
 void Simulation::advanceTimeStep() {
     currentTime_++;
 
-    // Decrement to ensure that removing a truck does not screw up indexing
-    for(int i = deployedTrucks.size() - 1; i >= 0; i--) {
-        if (deployedTrucks[i]->taskFinished(currentTime_)) {
-            deployedTrucks[i]->startNextTask(currentTime_);
-
-            if (deployedTrucks[i]->isReadyToUnload()) {
-                placeTruckAtUnloadStation(i);
-            }
-        }
-    }
-
+    // Process trucks at the unload stations first so that no truck
+    // ever enters and exits the line at the same time.
     for (auto& station : unloadStations) {
         // If the station is vacant, skip it
         if (station->isVacant()) continue;
@@ -48,6 +42,17 @@ void Simulation::advanceTimeStep() {
             deployedTrucks.push_back(std::move(truck));
         }
     }
+
+    // Decrement to ensure that removing a truck does not screw up indexing
+    for(int i = deployedTrucks.size() - 1; i >= 0; i--) {
+        if (deployedTrucks[i]->taskFinished(currentTime_)) {
+            deployedTrucks[i]->startNextTask(currentTime_);
+
+            if (deployedTrucks[i]->isReadyToUnload()) {
+                placeTruckAtUnloadStation(i);
+            }
+        }
+    }
 }
 
 void Simulation::placeTruckAtUnloadStation(uint32_t truckIndex) {
@@ -58,6 +63,7 @@ void Simulation::placeTruckAtUnloadStation(uint32_t truckIndex) {
     int shortestLine = 0;  // Index of the shortest line
     int shortestLineLength = unloadStations[0]->lineSize();
 
+    // Iterate over each station, checking for the shortest line
     for(int i = 0; i < unloadStations.size(); i++) {
         // Immediately add the truck to the station if it is vacant
         if (unloadStations[i]->isVacant()) {
@@ -75,17 +81,32 @@ void Simulation::placeTruckAtUnloadStation(uint32_t truckIndex) {
 }
 
 void Simulation::reportSimulationResults() const {
-    // Tally up total dumps from all trucks
+    // Initialize total parameters
     uint32_t totalDumps = 0;
-
-    for (auto& station : unloadStations) {
-        totalDumps += station->totalDumps();
+    uint32_t totalLineWaitTime = 0;
+    
+    // Tally up total parameters from all stations and trucks
+    for (const auto& truck : deployedTrucks) {
+        totalLineWaitTime += truck->totalLineWaitTime();
     }
+    for (const auto& station : unloadStations) {
+        totalDumps += station->totalDumps();
+        totalLineWaitTime += station->totalLineWaitTimeFromAllTrucks();
+    }
+
+    totalLineWaitTime *= 5; // Convert to minutes
+
+    // Calculate average parameters
     uint32_t averageDumpsPerStation = totalDumps / m_;
     uint32_t averageDumpsPerTruck = totalDumps / n_;
+    uint32_t averageLineWaitTimePerTruck = totalLineWaitTime / n_;
+    uint32_t averageLineWaitTimePerDump = totalLineWaitTime / totalDumps;
 
+    // Print results
     std::cout << "Simulation completed\n";
     std::cout << "Total number of dumps from all stations: " << totalDumps << "\n";
     std::cout << "Average number of dumps per truck: " << averageDumpsPerTruck << "\n";
     std::cout << "Average number of dumps per station: " << averageDumpsPerStation << "\n";
+    std::cout << "Average line wait time per truck: " << averageLineWaitTimePerTruck << " minutes\n";
+    std::cout << "Average line wait time per dump: " << averageLineWaitTimePerDump << " minutes\n";
 }
