@@ -30,6 +30,8 @@ void Simulation::advanceTimeStep() {
     // Process trucks at the unload stations first so that no truck
     // ever enters and exits the line at the same time.
     for (auto& station : unloadStations) {
+        station->timeStepAdvanced();
+
         // If the station is vacant, skip it
         if (station->isVacant()) continue;
         
@@ -81,17 +83,29 @@ void Simulation::placeTruckAtUnloadStation(uint32_t truckIndex) {
 }
 
 void Simulation::reportSimulationResults() const {
+    std::cout << "SIMULATION COMPLETED\n\n";
+
     // Initialize total parameters
     uint32_t totalDumps = 0;
     uint32_t totalLineWaitTime = 0;
+    uint32_t totalLineSize = 0;
     
     // Tally up total parameters from all stations and trucks
     for (const auto& truck : deployedTrucks) {
         totalLineWaitTime += truck->totalLineWaitTime();
+        truck->printStatistics();
     }
     for (const auto& station : unloadStations) {
         totalDumps += station->totalDumps();
         totalLineWaitTime += station->totalLineWaitTimeFromAllTrucks();
+        totalLineSize += station->averageLineSize();
+        station->printStatisticsForAllTrucks();
+    }
+
+    std::cout << "\n";
+
+    for (const auto& station : unloadStations) {
+        station->printStatistics();
     }
 
     totalLineWaitTime *= 5; // Convert to minutes
@@ -99,14 +113,13 @@ void Simulation::reportSimulationResults() const {
     // Calculate average parameters
     uint32_t averageDumpsPerStation = totalDumps / m_;
     uint32_t averageDumpsPerTruck = totalDumps / n_;
-    uint32_t averageLineWaitTimePerTruck = totalLineWaitTime / n_;
-    uint32_t averageLineWaitTimePerDump = totalLineWaitTime / totalDumps;
+    uint32_t averageLineWaitTime = totalLineWaitTime / totalDumps;
+    uint32_t averageLineSize = totalLineSize / m_;
 
     // Print results
-    std::cout << "Simulation completed\n";
-    std::cout << "Total number of dumps from all stations: " << totalDumps << "\n";
+    std::cout << "\nTotal number of dumps from all stations: " << totalDumps << "\n";
     std::cout << "Average number of dumps per truck: " << averageDumpsPerTruck << "\n";
     std::cout << "Average number of dumps per station: " << averageDumpsPerStation << "\n";
-    std::cout << "Average line wait time per truck: " << averageLineWaitTimePerTruck << " minutes\n";
-    std::cout << "Average line wait time per dump: " << averageLineWaitTimePerDump << " minutes\n";
+    std::cout << "Average line wait time: " << averageLineWaitTime << " minutes\n";
+    std::cout << "Average line size: " << averageLineSize << "\n";
 }

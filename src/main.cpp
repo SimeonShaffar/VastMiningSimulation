@@ -5,7 +5,7 @@
 int main(int argc, char* argv[]) {
     Args args = parseArgs(argc, argv);
 
-    std::cout << "VastMiningSimulation\n\n";
+    std::cout << "VAST MINING SIMULATION\n\n";
 
     Simulation simulation(args.n, args.m);
 

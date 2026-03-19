@@ -23,5 +23,11 @@ The simulation is configured with 2 variable parameters:
 These parameters are configured using command line arguments. The following example shows a configuration fo 100 trucks sharing 10 stations.
 ```bash
 cd build
-./VastMiningSimulation -n 100 -m 10
+./VastMiningSimulation 1000 10
+```
+
+To log results, simply use a linux pipe and write to a text file:
+```bash
+cd VastMiningSimulation
+build/VastMiningSimulation 1000 10 > my_results.txt
 ```

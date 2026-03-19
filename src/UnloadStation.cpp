@@ -27,6 +27,10 @@ std::unique_ptr<MiningTruck> UnloadStation::unloadTruck() {
     return truck;
 }
 
+void UnloadStation::timeStepAdvanced() {
+    totalLineSize_ += trucksLine_.size();
+}
+
 // Used at the final simiulation report whilst tallying up total dumps from all trucks
 uint32_t UnloadStation::totalUnloadsFromAllTrucks() const {
     uint32_t totalUnloads = 0;
@@ -42,4 +46,17 @@ uint32_t UnloadStation::totalLineWaitTimeFromAllTrucks() const {
         totalLineWaitTime += truck->totalLineWaitTime();
     }
     return totalLineWaitTime;
+}
+
+void UnloadStation::printStatisticsForAllTrucks() const {
+    for (const auto& truck : trucksLine_) {
+        truck->printStatistics();
+    }
+}
+
+uint32_t UnloadStation::averageLineSize() const {
+    return totalLineSize_ / (72 * 12);
+}
+void UnloadStation::printStatistics() const {
+    std::cout << "Unload station " << id_ << " average line size: " << averageLineSize() << "\n";
 }

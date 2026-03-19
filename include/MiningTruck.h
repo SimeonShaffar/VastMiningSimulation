@@ -1,6 +1,7 @@
 #pragma once
 
 #include <random>
+#include <iostream>
 
 class MiningTruck {
     public:
@@ -16,6 +17,7 @@ class MiningTruck {
 
         uint32_t totalUnloads() const { return totalUnloads_; }
         uint32_t totalLineWaitTime() const { return totalLineWaitTime_; }
+        void printStatistics() const;
 
     private:
         const uint32_t id_;

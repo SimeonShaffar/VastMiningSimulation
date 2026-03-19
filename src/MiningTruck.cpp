@@ -40,3 +40,9 @@ uint32_t MiningTruck::getMiningDuration() {
     // Random number between 12 and 60 timesteps corresponding to 1-5 hours
     return rand() % 48 + 12;
 }
+
+void MiningTruck::printStatistics() const {
+    std::cout << "Truck " << id_ 
+        << " \ttotal unloads: " << totalUnloads_ << ", "
+        << " \taverage line wait time: " << totalLineWaitTime_ / totalUnloads_  * 5 << " minutes\n";
+}
