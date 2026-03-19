@@ -1,6 +1,6 @@
 #pragma once
 
-#include <queue>
+#include <deque>
 #include <memory>
 #include "MiningTruck.h"
 
@@ -16,7 +16,13 @@ class UnloadStation {
         void addTruck(std::unique_ptr<MiningTruck> truck);
         std::unique_ptr<MiningTruck> unloadTruck();
 
+        uint32_t totalDumps() const { return totalDumps_; }
+
+        uint32_t totalUnloadsFromAllTrucks() const;
+
     private:
         const uint32_t id_;
-        std::queue<std::unique_ptr<MiningTruck>> trucksLine_;
+        std::deque<std::unique_ptr<MiningTruck>> trucksLine_;
+
+        uint32_t totalDumps_;
 };

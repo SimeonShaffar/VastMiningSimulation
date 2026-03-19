@@ -12,7 +12,9 @@ class MiningTruck {
 
         bool taskFinished(uint32_t currentTime) const;
 
-        void startNextTask(uint32_t currentTime);        
+        void startNextTask(uint32_t currentTime);
+
+        uint32_t totalUnloads() const { return totalUnloads_; }
 
     private:
         const uint32_t id_;
@@ -27,4 +29,6 @@ class MiningTruck {
         uint32_t endTime_;
 
         static uint32_t getMiningDuration();
+
+        uint32_t totalUnloads_;
 };

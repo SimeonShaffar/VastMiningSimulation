@@ -1,6 +1,6 @@
 #include "Simulation.h"
 
-Simulation::Simulation(uint32_t n, uint32_t m) {
+Simulation::Simulation(uint32_t n, uint32_t m) : n_(n), m_(m) {
     deployedTrucks.reserve(n);
     unloadStations.reserve(m);
 
@@ -19,8 +19,6 @@ void Simulation::run() {
     while (currentTime_ < endTime_) {
         advanceTimeStep();
     }
-
-    std::cout << "Simulation completed\n";
 }
 
 void Simulation::advanceTimeStep() {
@@ -72,6 +70,22 @@ void Simulation::placeTruckAtUnloadStation(uint32_t truckIndex) {
             shortestLineLength = unloadStations[i]->lineSize();
         }
     }
-    
+
     unloadStations[shortestLine]->addTruck(std::move(truck));
+}
+
+void Simulation::reportSimulationResults() const {
+    // Tally up total dumps from all trucks
+    uint32_t totalDumps = 0;
+
+    for (auto& station : unloadStations) {
+        totalDumps += station->totalDumps();
+    }
+    uint32_t averageDumpsPerStation = totalDumps / m_;
+    uint32_t averageDumpsPerTruck = totalDumps / n_;
+
+    std::cout << "Simulation completed\n";
+    std::cout << "Total number of dumps from all stations: " << totalDumps << "\n";
+    std::cout << "Average number of dumps per truck: " << averageDumpsPerTruck << "\n";
+    std::cout << "Average number of dumps per station: " << averageDumpsPerStation << "\n";
 }

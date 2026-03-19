@@ -1,7 +1,7 @@
 #include "MiningTruck.h"
 
 
-MiningTruck::MiningTruck(uint32_t id) : id_(id), task_(Task::AT_MINING_SITE) {
+MiningTruck::MiningTruck(uint32_t id) : id_(id), task_(Task::AT_MINING_SITE), totalUnloads_(0) {
     endTime_ = getMiningDuration();
 }
 
@@ -20,6 +20,7 @@ void MiningTruck::startNextTask(uint32_t currentTime) {
             endTime_ = currentTime + 1;  // 5 minute unload time
             return;
         case Task::AT_UNLOAD_STATION:
+            totalUnloads_++;              // Successful unload, track for simulation report
             task_ = Task::HEADING_TO_SITE;
             endTime_ = currentTime + 6; // 6, 5 minute time steps for 30 minute travel time
             return;
