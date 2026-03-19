@@ -1,25 +1,25 @@
 #include "UnloadStation.h"
 
-UnloadStation::UnloadStation(uint32_t id) : id_(id), trucks() {}
+UnloadStation::UnloadStation(uint32_t id) : id_(id), trucksLine_() {}
 
 bool UnloadStation::isVacant() const {
-    return trucks.empty();
+    return trucksLine_.empty();
 }
 
 uint32_t UnloadStation::lineSize() const {
-    return trucks.size();
+    return trucksLine_.size();
 }
 
-void UnloadStation::addTruck(unique_ptr<MiningTruck> truck) {
-    trucks.push(std::move(truck));
+void UnloadStation::addTruck(std::unique_ptr<MiningTruck> truck) {
+    trucksLine_.push(std::move(truck));
 }
 
-unique_ptr<MiningTruck> UnloadStation::unloadTruck() {
+std::unique_ptr<MiningTruck> UnloadStation::unloadTruck() {
     if (isVacant()) { return nullptr; }
 
     // Move the truck out of the station
-    unique_ptr<MiningTruck> truck = std::move(trucks.front());
-    trucks.pop();
+    std::unique_ptr<MiningTruck> truck = std::move(trucksLine_.front());
+    trucksLine_.pop();
 
     // Return the truck
     return truck;

@@ -8,7 +8,7 @@ class MiningTruck {
 
         uint32_t id() const { return id_; }
 
-        bool isAtUnloadStation() const { return state == Task::AT_UNLOAD_STATION; }
+        bool isReadyToUnload() const { return task_ == Task::AT_UNLOAD_STATION; }
 
         bool taskFinished(uint32_t currentTime) const;
 
@@ -17,14 +17,14 @@ class MiningTruck {
     private:
         const uint32_t id_;
 
-        static uint32_t getMiningDuration();
-
         enum class Task {
             AT_MINING_SITE,
             HEADING_TO_UNLOAD,
             AT_UNLOAD_STATION,
             HEADING_TO_SITE,            
-        } state;
+        } task_;
 
-        uint32_t endTime;
+        uint32_t endTime_;
+
+        static uint32_t getMiningDuration();
 };

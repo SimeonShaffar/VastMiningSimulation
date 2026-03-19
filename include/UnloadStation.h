@@ -4,9 +4,6 @@
 #include <memory>
 #include "MiningTruck.h"
 
-using std::unique_ptr;
-using std::queue;
-
 class UnloadStation {
     public:
         UnloadStation(uint32_t id);
@@ -16,10 +13,10 @@ class UnloadStation {
         bool isVacant() const;
         uint32_t lineSize() const;
 
-        void addTruck(unique_ptr<MiningTruck> truck);
-        unique_ptr<MiningTruck> unloadTruck();
+        void addTruck(std::unique_ptr<MiningTruck> truck);
+        std::unique_ptr<MiningTruck> unloadTruck();
 
     private:
         const uint32_t id_;
-        queue<unique_ptr<MiningTruck>> trucks;
+        std::queue<std::unique_ptr<MiningTruck>> trucksLine_;
 };

@@ -1,31 +1,31 @@
 #include "MiningTruck.h"
 
 
-MiningTruck::MiningTruck(uint32_t id) : id_(id), state(Task::AT_MINING_SITE) {
-    endTime = getMiningDuration();
+MiningTruck::MiningTruck(uint32_t id) : id_(id), task_(Task::AT_MINING_SITE) {
+    endTime_ = getMiningDuration();
 }
 
 bool MiningTruck::taskFinished(uint32_t currentTime) const {
-    return currentTime >= endTime;
+    return currentTime >= endTime_;
 }
 
 void MiningTruck::startNextTask(uint32_t currentTime) {
-    switch (state) {
+    switch (task_) {
         case Task::AT_MINING_SITE:
-            state = Task::HEADING_TO_UNLOAD;
-            endTime = currentTime + 6; // 6, 5 minute time steps for 30 minute travel time
+            task_ = Task::HEADING_TO_UNLOAD;
+            endTime_ = currentTime + 6; // 6, 5 minute time steps for 30 minute travel time
             return;
         case Task::HEADING_TO_UNLOAD:
-            state = Task::AT_UNLOAD_STATION;
-            endTime = currentTime + 1;  // 5 minute unload time
+            task_ = Task::AT_UNLOAD_STATION;
+            endTime_ = currentTime + 1;  // 5 minute unload time
             return;
         case Task::AT_UNLOAD_STATION:
-            state = Task::HEADING_TO_SITE;
-            endTime = currentTime + 6; // 6, 5 minute time steps for 30 minute travel time
+            task_ = Task::HEADING_TO_SITE;
+            endTime_ = currentTime + 6; // 6, 5 minute time steps for 30 minute travel time
             return;
         case Task::HEADING_TO_SITE:
-            state = Task::AT_MINING_SITE;
-            endTime = currentTime + getMiningDuration();
+            task_ = Task::AT_MINING_SITE;
+            endTime_ = currentTime + getMiningDuration();
             return;
     }
 }

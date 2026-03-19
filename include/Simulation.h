@@ -6,12 +6,9 @@
 #include "MiningTruck.h"
 #include "UnloadStation.h"
 
-using std::unique_ptr;
-using std::vector;
-
 class Simulation {
     public:
-        Simulation(int n, int m);
+        Simulation(uint32_t n, uint32_t m);
 
         void run();
 
@@ -21,9 +18,9 @@ class Simulation {
 
     private:
         // Trucks will be moved around between these two lists
-        vector<unique_ptr<MiningTruck>> deployedTrucks;
-        vector<unique_ptr<UnloadStation>> unloadStations;
+        std::vector<std::unique_ptr<MiningTruck>> deployedTrucks;
+        std::vector<std::unique_ptr<UnloadStation>> unloadStations;
     
-        uint32_t currentTime;
-        uint32_t endTime;
+        uint32_t currentTime_;
+        uint32_t endTime_;
 };

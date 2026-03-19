@@ -1,6 +1,6 @@
 #include "Simulation.h"
 
-Simulation::Simulation(int n, int m) {
+Simulation::Simulation(uint32_t n, uint32_t m) {
     deployedTrucks.reserve(n);
     unloadStations.reserve(m);
 
@@ -11,12 +11,12 @@ Simulation::Simulation(int n, int m) {
         unloadStations.push_back(std::make_unique<UnloadStation>(i));
     }
 
-    currentTime = 0;
-    endTime = 72 * 12; // 72 hours * 12, 5 minute time steps per hour
+    currentTime_ = 0;
+    endTime_ = 72 * 12; // 72 hours * 12, 5 minute time steps per hour
 }
 
 void Simulation::run() {
-    while (currentTime < endTime) {
+    while (currentTime_ < endTime_) {
         advanceTimeStep();
     }
 
@@ -24,16 +24,16 @@ void Simulation::run() {
 }
 
 void Simulation::advanceTimeStep() {
-    currentTime++;
+    currentTime_++;
 
-    std::cout << "Simulation advancing to time step " << currentTime << std::endl;
+    std::cout << "Simulation advancing to time step " << currentTime_ << std::endl;
 
     // Decrement to ensure that removing a truck does not screw up indexing
     for(int i = deployedTrucks.size() - 1; i >= 0; i--) {
-        if (deployedTrucks[i]->taskFinished(currentTime)) {
-            deployedTrucks[i]->startNextTask(currentTime);
+        if (deployedTrucks[i]->taskFinished(currentTime_)) {
+            deployedTrucks[i]->startNextTask(currentTime_);
 
-            if (deployedTrucks[i]->isAtUnloadStation()) {
+            if (deployedTrucks[i]->isReadyToUnload()) {
                 std::cout << "\tTruck " << deployedTrucks[i]->id() << " is at unload station" << std::endl;
                 placeTruckAtUnloadStation(i);
             }
@@ -45,11 +45,11 @@ void Simulation::advanceTimeStep() {
         if (station->isVacant()) continue;
         
         // Pop the first truck off the station
-        unique_ptr<MiningTruck> truck = station->unloadTruck();
+        std::unique_ptr<MiningTruck> truck = station->unloadTruck();
 
         // Add the truck back to the deployed trucks list
         if (truck) {
-            truck->startNextTask(currentTime);
+            truck->startNextTask(currentTime_);
             deployedTrucks.push_back(std::move(truck));
         }
     }
@@ -57,7 +57,7 @@ void Simulation::advanceTimeStep() {
 
 void Simulation::placeTruckAtUnloadStation(uint32_t truckId) {
     // Pop the truck from the deployed trucks list
-    unique_ptr<MiningTruck> truck = std::move(deployedTrucks[truckId]);
+    std::unique_ptr<MiningTruck> truck = std::move(deployedTrucks[truckId]);
     deployedTrucks.erase(deployedTrucks.begin() + truckId);
 
     int shortestLine = 0;  // Index of the shortest line
