@@ -1,10 +1,13 @@
 #include <iostream>
 #include "Simulation.h"
+#include "Args.h"
 
-int main() {
-    std::cout << "VastMiningSimulation\n";
+int main(int argc, char* argv[]) {
+    Args args = parseArgs(argc, argv);
 
-    Simulation simulation(100, 10);
+    std::cout << "VastMiningSimulation\n\n";
+
+    Simulation simulation(args.n, args.m);
 
     simulation.run();
 

@@ -20,13 +20,11 @@ void Simulation::run() {
         advanceTimeStep();
     }
 
-    std::cout << "Simulation completed" << std::endl;
+    std::cout << "Simulation completed\n";
 }
 
 void Simulation::advanceTimeStep() {
     currentTime_++;
-
-    std::cout << "Simulation advancing to time step " << currentTime_ << std::endl;
 
     // Decrement to ensure that removing a truck does not screw up indexing
     for(int i = deployedTrucks.size() - 1; i >= 0; i--) {
@@ -34,7 +32,6 @@ void Simulation::advanceTimeStep() {
             deployedTrucks[i]->startNextTask(currentTime_);
 
             if (deployedTrucks[i]->isReadyToUnload()) {
-                std::cout << "\tTruck " << deployedTrucks[i]->id() << " is at unload station" << std::endl;
                 placeTruckAtUnloadStation(i);
             }
         }
@@ -66,9 +63,7 @@ void Simulation::placeTruckAtUnloadStation(uint32_t truckIndex) {
     for(int i = 0; i < unloadStations.size(); i++) {
         // Immediately add the truck to the station if it is vacant
         if (unloadStations[i]->isVacant()) {
-            std::cout << "\tPlacing truck " << truck->id() << " at empty unload station " << i << std::endl;
             unloadStations[i]->addTruck(std::move(truck));
-            
             return;
         }
         // Otherwise, track the shortest line out of all the stations
@@ -77,9 +72,6 @@ void Simulation::placeTruckAtUnloadStation(uint32_t truckIndex) {
             shortestLineLength = unloadStations[i]->lineSize();
         }
     }
-
-    std::cout << "\tPlacing truck " << truck->id() << " at unload station " << shortestLine 
-     << " with line size " << shortestLineLength << std::endl;
-
+    
     unloadStations[shortestLine]->addTruck(std::move(truck));
 }
