@@ -19,8 +19,6 @@ unique_ptr<MiningTruck> UnloadStation::unloadTruck() {
 
     // Move the truck out of the station
     unique_ptr<MiningTruck> truck = std::move(trucks.front());
-
-    // Pop the remaining nullptr out of the queue
     trucks.pop();
 
     // Return the truck

@@ -28,38 +28,49 @@ void Simulation::advanceTimeStep() {
 
     std::cout << "Simulation advancing to time step " << currentTime << std::endl;
 
-    for (auto& truck : deployedTrucks) {
-        if (truck->taskFinished(currentTime)) {
-            truck->startNextTask(currentTime);
+    // Decrement to ensure that removing a truck does not screw up indexing
+    for(int i = deployedTrucks.size() - 1; i >= 0; i--) {
+        if (deployedTrucks[i]->taskFinished(currentTime)) {
+            deployedTrucks[i]->startNextTask(currentTime);
 
-            if (truck->isAtUnloadStation()) {
-                std::cout << "\tTruck " << truck->id() << " is at unload station" << std::endl;
-                placeTruckAtUnloadStation(std::move(truck));
+            if (deployedTrucks[i]->isAtUnloadStation()) {
+                std::cout << "\tTruck " << deployedTrucks[i]->id() << " is at unload station" << std::endl;
+                placeTruckAtUnloadStation(i);
             }
         }
     }
 
-    // for (auto& station : unloadStations) {
-    //     // If the station is vacant, skip it
-    //     if (station->isVacant()) continue;
+    for (auto& station : unloadStations) {
+        // If the station is vacant, skip it
+        if (station->isVacant()) continue;
         
-    //     // Pop the first truck off the station
-    //     unique_ptr<MiningTruck> truck = station->unloadTruck();
-    // }
+        // Pop the first truck off the station
+        unique_ptr<MiningTruck> truck = station->unloadTruck();
+
+        // Add the truck back to the deployed trucks list
+        if (truck) {
+            truck->startNextTask(currentTime);
+            deployedTrucks.push_back(std::move(truck));
+        }
+    }
 }
 
-void Simulation::placeTruckAtUnloadStation(unique_ptr<MiningTruck> truck) {
+void Simulation::placeTruckAtUnloadStation(uint32_t truckId) {
+    // Pop the truck from the deployed trucks list
+    unique_ptr<MiningTruck> truck = std::move(deployedTrucks[truckId]);
+    deployedTrucks.erase(deployedTrucks.begin() + truckId);
+
     int shortestLine = 0;  // Index of the shortest line
     int shortestLineLength = unloadStations[0]->lineSize();
-
-    std::cout << "Placing truck " << truck->id() << " at unload station " << shortestLine << std::endl;
 
     for(int i = 0; i < unloadStations.size(); i++) {
         // Immediately add the truck to the station if it is vacant
         if (unloadStations[i]->isVacant()) {
+            std::cout << "\tPlacing truck " << truck->id() << " at empty unload station " << i << std::endl;
             unloadStations[i]->addTruck(std::move(truck));
+            
             return;
-        } 
+        }
         // Otherwise, track the shortest line out of all the stations
         else if (unloadStations[i]->lineSize() < shortestLineLength) {
             shortestLine = i;
@@ -67,6 +78,8 @@ void Simulation::placeTruckAtUnloadStation(unique_ptr<MiningTruck> truck) {
         }
     }
 
-    // Add the truck to the shortest line
-    // unloadStations[shortestLine]->addTruck(std::move(truck));
+    std::cout << "\tPlacing truck " << truck->id() << " at unload station " << shortestLine 
+     << " with line size " << shortestLineLength << std::endl;
+
+    unloadStations[shortestLine]->addTruck(std::move(truck));
 }

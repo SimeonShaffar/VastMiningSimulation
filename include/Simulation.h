@@ -17,13 +17,13 @@ class Simulation {
 
         void advanceTimeStep();
 
-        void placeTruckAtUnloadStation(unique_ptr<MiningTruck> truck);
+        void placeTruckAtUnloadStation(uint32_t truckId);
 
     private:
         // Trucks will be moved around between these two lists
         vector<unique_ptr<MiningTruck>> deployedTrucks;
         vector<unique_ptr<UnloadStation>> unloadStations;
-
+    
         uint32_t currentTime;
         uint32_t endTime;
 };
