@@ -1,7 +1,12 @@
 #include <iostream>
+#include "Simulation.h"
 
 int main() {
     std::cout << "VastMiningSimulation\n";
+
+    Simulation simulation(100, 10);
+
+    simulation.run();
 
     // Initialize a vector of mining trucks
         // Each truck tracks a position state, which can be simplified down to an enum

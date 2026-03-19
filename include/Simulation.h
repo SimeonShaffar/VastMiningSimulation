@@ -1,15 +1,10 @@
 #pragma once
 
-#include <iostream>
 #include <vector>
-#include <random>
-#include <chrono>
-#include <thread>
-#include <mutex>
-#include <condition_variable>
-#include <atomic>
-#include <functional>
-#include <algorithm>
+#include <memory>
+#include <iostream>
+#include "MiningTruck.h"
+#include "UnloadStation.h"
 
 using std::unique_ptr;
 using std::vector;
@@ -18,9 +13,11 @@ class Simulation {
     public:
         Simulation(int n, int m);
 
+        void run();
+
         void advanceTimeStep();
 
-        unique_ptr<UnloadStation> findShortestLine();
+        void placeTruckAtUnloadStation(unique_ptr<MiningTruck> truck);
 
     private:
         // Trucks will be moved around between these two lists

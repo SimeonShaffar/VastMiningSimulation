@@ -1,11 +1,7 @@
 #include "MiningTruck.h"
 
-uint32_t MiningTruck::getMiningDuration() {
-    // Random number between 12 and 60 timesteps corresponding to 1-5 hours
-    return rand() % 48 + 12;
-}
 
-MiningTruck::MiningTruck(uint32_t id) : id(id), state(Task::AT_MINING_SITE) {
+MiningTruck::MiningTruck(uint32_t id) : id_(id), state(Task::AT_MINING_SITE) {
     endTime = getMiningDuration();
 }
 
@@ -32,4 +28,9 @@ void MiningTruck::startNextTask(uint32_t currentTime) {
             endTime = currentTime + getMiningDuration();
             return;
     }
+}
+
+uint32_t MiningTruck::getMiningDuration() {
+    // Random number between 12 and 60 timesteps corresponding to 1-5 hours
+    return rand() % 48 + 12;
 }
