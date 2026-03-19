@@ -1,9 +1,11 @@
 #include "Simulation.h"
 
 Simulation::Simulation(uint32_t n, uint32_t m) : n_(n), m_(m) {
+    // Reserve memory for the trucks and stations to avoid unnecessary reallocations
     deployedTrucks.reserve(n);
     unloadStations.reserve(m);
 
+    // Load up the trucks and stations
     for (int i = 0; i < n; i++) {
         deployedTrucks.push_back(std::make_unique<MiningTruck>(i));
     }

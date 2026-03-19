@@ -3,10 +3,11 @@
 #include <random>
 #include <iostream>
 
+// Class for representing a mining truck in the simulation
 class MiningTruck {
     public:
         MiningTruck(uint32_t id);
-
+        
         uint32_t id() const { return id_; }
 
         bool isReadyToUnload() const { return task_ == Task::AT_UNLOAD_STATION; }

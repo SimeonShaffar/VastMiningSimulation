@@ -3,6 +3,9 @@
 #include <cstdint>
 #include <cstdlib>
 
+// I typically like to use a struct for command line arguments because 
+// it makes it easier to handle default values, and an instance of them 
+// can be passed around in a project quite easily
 struct Args {
     uint32_t n = 100;       // Number of mining trucks
     uint32_t m = 10;        // Number of unload stations

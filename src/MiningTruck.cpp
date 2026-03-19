@@ -12,6 +12,7 @@ bool MiningTruck::taskFinished(uint32_t currentTime) const {
     return result;
 }
 
+// This is the main function that moves the state of the truck between tasks
 void MiningTruck::startNextTask(uint32_t currentTime) {
     switch (task_) {
         case Task::AT_MINING_SITE:
