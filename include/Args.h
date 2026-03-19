@@ -1,7 +1,6 @@
 #pragma once
 
-#include <cstdint>
-#include <cstdlib>
+#include <iostream>
 
 // I typically like to use a struct for command line arguments because 
 // it makes it easier to handle default values, and an instance of them 

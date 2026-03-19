@@ -1,6 +1,6 @@
 #include "UnloadStation.h"
 
-UnloadStation::UnloadStation(uint32_t id) : id_(id), trucksLine_() {}
+UnloadStation::UnloadStation(uint32_t id) : id_(id), trucksLine_(), totalDumps_(0), totalLineSize_(0) {}
 
 bool UnloadStation::isVacant() const {
     return trucksLine_.empty();

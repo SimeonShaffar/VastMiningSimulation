@@ -31,3 +31,9 @@ To log results, simply use a linux pipe and write to a text file:
 cd VastMiningSimulation
 build/VastMiningSimulation 1000 10 > my_results.txt
 ```
+
+To run unit tests, simply run the test executable
+```bash
+cd build
+./tests
+```
