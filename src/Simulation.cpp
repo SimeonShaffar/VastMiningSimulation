@@ -55,10 +55,10 @@ void Simulation::advanceTimeStep() {
     }
 }
 
-void Simulation::placeTruckAtUnloadStation(uint32_t truckId) {
+void Simulation::placeTruckAtUnloadStation(uint32_t truckIndex) {
     // Pop the truck from the deployed trucks list
-    std::unique_ptr<MiningTruck> truck = std::move(deployedTrucks[truckId]);
-    deployedTrucks.erase(deployedTrucks.begin() + truckId);
+    std::unique_ptr<MiningTruck> truck = std::move(deployedTrucks[truckIndex]);
+    deployedTrucks.erase(deployedTrucks.begin() + truckIndex);
 
     int shortestLine = 0;  // Index of the shortest line
     int shortestLineLength = unloadStations[0]->lineSize();

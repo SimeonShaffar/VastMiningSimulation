@@ -14,7 +14,7 @@ class Simulation {
 
         void advanceTimeStep();
 
-        void placeTruckAtUnloadStation(uint32_t truckId);
+        void placeTruckAtUnloadStation(uint32_t truckIndex);
 
     private:
         // Trucks will be moved around between these two lists
